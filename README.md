@@ -285,8 +285,8 @@ Entorno recomendado: Python 3.10 o superior (compatible con Python 3.11, 3.12 y 
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/GuillenConcepcion/DS-Credit_Scoring_Project.git
-cd DS-Credit_Scoring_Project
+git clone https://github.com/GuillenConcepcion/Credit_Scoring_Project.git
+cd Credit_Scoring_Project
 
 # Instalación de dependencias del proyecto
 pip install pandas numpy scipy scikit-learn matplotlib seaborn openpyxl xlsxwriter kagglehub fastapi uvicorn

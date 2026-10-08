@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Risk Intelligence & Real-Time Scoring Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Top Navigation & Branding -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand-group">
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1 class="brand-title">Credit Risk Scoring Engine</h1>
+                    <span class="brand-subtitle">CRISP-DM Analytics & Real-Time Decisioning System</span>
+                </div>
+            </div>
+
+            <div class="header-meta">
+                <div class="badge-status">
+                    <span class="status-dot"></span>
+                    <span>Pipeline Producción Activo</span>
+                </div>
+                <div class="author-tag">
+                    <span class="author-name">Guillén Concepción</span>
+                    <span class="author-role">Sr. Data Scientist & MLOps</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Bar -->
+        <nav class="tab-nav">
+            <div class="nav-container">
+                <button class="nav-btn active" data-tab="tab-simulator" id="nav-btn-simulator">
+                    <span class="nav-icon">⚡</span>
+                    <span>Simulador de Scoring</span>
+                    <span class="nav-pill">En Vivo</span>
+                </button>
+                <button class="nav-btn" data-tab="tab-overview" id="nav-btn-overview">
+                    <span class="nav-icon">📊</span>
+                    <span>Visión Ejecutiva & Datos</span>
+                </button>
+                <button class="nav-btn" data-tab="tab-discrimination" id="nav-btn-discrimination">
+                    <span class="nav-icon">🎯</span>
+                    <span>Discriminación & Storytelling</span>
+                </button>
+                <button class="nav-btn" data-tab="tab-stability" id="nav-btn-stability">
+                    <span class="nav-icon">🛡️</span>
+                    <span>Estabilidad & PSI</span>
+                </button>
+                <button class="nav-btn" data-tab="tab-features" id="nav-btn-features">
+                    <span class="nav-icon">🔬</span>
+                    <span>Selección de Variables</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-content">
+        <!-- ========================================== -->
+        <!-- TAB 1: REAL-TIME CREDIT SCORING SIMULATOR -->
+        <!-- ========================================== -->
+        <section id="tab-simulator" class="tab-pane active">
+            <div class="pane-header">
+                <div>
+                    <h2 class="pane-title">Simulador Interactivo de Riesgo de Crédito</h2>
+                    <p class="pane-desc">Calcula en tiempo real la probabilidad de incumplimiento y el Credit Score (FICO 300-850) utilizando el modelo calibrado sobre las 7 variables seleccionadas.</p>
+                </div>
+                <div class="presets-group">
+                    <span class="presets-label">Perfiles de Prueba:</span>
+                    <button class="btn-preset" id="preset-prime" type="button">🌟 Cliente Prime</button>
+                    <button class="btn-preset" id="preset-medium" type="button">⚖️ Riesgo Medio</button>
+                    <button class="btn-preset" id="preset-subprime" type="button">⚠️ Alto Riesgo</button>
+                </div>
+            </div>
+
+            <div class="simulator-layout">
+                <!-- Input Panel -->
+                <div class="sim-card card-inputs">
+                    <div class="card-header">
+                        <h3 class="card-title">Parámetros del Solicitante</h3>
+                        <span class="card-caption">Variables del Scorecard</span>
+                    </div>
+
+                    <form id="simulator-form" class="sim-form">
+                        <!-- Income -->
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label for="input-income">Ingreso Anual Bruto ($)</label>
+                                <span class="input-val" id="val-income">$65,000</span>
+                            </div>
+                            <input type="range" id="input-income" min="10000" max="250000" step="2500" value="65000" class="sim-slider">
+                            <div class="slider-ticks">
+                                <span>$10k</span>
+                                <span>$75k</span>
+                                <span>$150k</span>
+                                <span>$250k+</span>
+                            </div>
+                        </div>
+
+                        <!-- Loan Percent Income (DTI) -->
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label for="input-dti">Ratio Préstamo / Ingreso (DTI)</label>
+                                <span class="input-val" id="val-dti">18%</span>
+                            </div>
+                            <input type="range" id="input-dti" min="0.02" max="0.75" step="0.01" value="0.18" class="sim-slider">
+                            <div class="slider-ticks">
+                                <span>2%</span>
+                                <span>25%</span>
+                                <span>50%</span>
+                                <span>75%</span>
+                            </div>
+                        </div>
+
+                        <!-- Interest Rate -->
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label for="input-rate">Tasa de Interés Solicitada (%)</label>
+                                <span class="input-val" id="val-rate">10.5%</span>
+                            </div>
+                            <input type="range" id="input-rate" min="5.0" max="25.0" step="0.25" value="10.5" class="sim-slider">
+                            <div class="slider-ticks">
+                                <span>5%</span>
+                                <span>11%</span>
+                                <span>18%</span>
+                                <span>25%</span>
+                            </div>
+                        </div>
+
+                        <!-- Employment Length -->
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label for="input-emp">Antigüedad Laboral (Años)</label>
+                                <span class="input-val" id="val-emp">5 años</span>
+                            </div>
+                            <input type="range" id="input-emp" min="0" max="35" step="1" value="5" class="sim-slider">
+                            <div class="slider-ticks">
+                                <span>0 años</span>
+                                <span>10 años</span>
+                                <span>20 años</span>
+                                <span>35 años</span>
+                            </div>
+                        </div>
+
+                        <!-- Age -->
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label for="input-age">Edad del Solicitante</label>
+                                <span class="input-val" id="val-age">32 años</span>
+                            </div>
+                            <input type="range" id="input-age" min="20" max="80" step="1" value="32" class="sim-slider">
+                            <div class="slider-ticks">
+                                <span>20</span>
+                                <span>40</span>
+                                <span>60</span>
+                                <span>80</span>
+                            </div>
+                        </div>
+
+                        <!-- Categorical Row -->
+                        <div class="form-row-grid">
+                            <div class="form-group">
+                                <label for="input-home">Régimen de Vivienda</label>
+                                <select id="input-home" class="sim-select">
+                                    <option value="RENT">Alquiler (RENT)</option>
+                                    <option value="MORTGAGE" selected>Hipoteca (MORTGAGE)</option>
+                                    <option value="OWN">Propia (OWN)</option>
+                                    <option value="OTHER">Otro (OTHER)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="input-default">Antecedente de Default</label>
+                                <select id="input-default" class="sim-select">
+                                    <option value="N" selected>No (Historial Limpio)</option>
+                                    <option value="Y">Sí (Incumplimiento Previo)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Decision & Output Panel -->
+                <div class="sim-card card-output">
+                    <div class="card-header">
+                        <h3 class="card-title">Resultado de Evaluación & Decisión</h3>
+                        <span class="card-caption" id="timestamp-sim">Tiempo real</span>
+                    </div>
+
+                    <div class="score-display-container">
+                        <!-- Score Radial Gauge -->
+                        <div class="gauge-wrapper">
+                            <svg class="score-gauge" viewBox="0 0 200 120">
+                                <!-- Background Arc -->
+                                <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" />
+                                <!-- Value Arc -->
+                                <path id="gauge-fill" class="gauge-fill" d="M 20 100 A 80 80 0 0 1 180 100" />
+                            </svg>
+                            <div class="score-center-data">
+                                <span class="score-number" id="result-score">724</span>
+                                <span class="score-scale">FICO 300 - 850</span>
+                            </div>
+                        </div>
+
+                        <!-- Decision Badge -->
+                        <div class="decision-badge badge-approved" id="result-decision-badge">
+                            <span class="decision-icon">✓</span>
+                            <span id="result-decision-text">APROBADO</span>
+                        </div>
+                        <div class="tier-pill" id="result-tier">Tier B (Bajo Riesgo)</div>
+                    </div>
+
+                    <!-- Metric Cards Row -->
+                    <div class="metric-duo">
+                        <div class="metric-box">
+                            <span class="box-caption">Probabilidad de Default (PD)</span>
+                            <span class="box-val" id="result-prob">8.45%</span>
+                            <div class="meter-bar">
+                                <div class="meter-fill" id="meter-prob-fill" style="width: 8.45%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-box">
+                            <span class="box-caption">Odds de Pago</span>
+                            <span class="box-val" id="result-odds">10.8 : 1</span>
+                            <span class="box-sub">Solvencia favorable</span>
+                        </div>
+                    </div>
+
+                    <!-- Policy Recommendation -->
+                    <div class="policy-card">
+                        <div class="policy-header">
+                            <span class="policy-icon">📋</span>
+                            <span class="policy-title">Dictamen del Motor de Decisión:</span>
+                        </div>
+                        <p class="policy-body" id="result-recommendation">
+                            Perfil de bajo riesgo crediticio. Aprobación estándar con condiciones habituales de mercado.
+                        </p>
+                    </div>
+
+                    <!-- Waterfall / Drivers List -->
+                    <div class="drivers-container">
+                        <h4 class="drivers-title">Factores Clave de Calificación:</h4>
+                        <div class="drivers-list" id="result-drivers-list">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: OVERVIEW & INGESTION -->
+        <!-- ========================================== -->
+        <section id="tab-overview" class="tab-pane">
+            <div class="pane-header">
+                <div>
+                    <h2 class="pane-title">Visión Ejecutiva del Pipeline & Datos</h2>
+                    <p class="pane-desc">Arquitectura CRISP-DM implementada sobre 32,581 solicitudes históricas con split temporal y validación cruzada.</p>
+                </div>
+            </div>
+
+            <!-- KPI Metric Cards Grid -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <span class="kpi-title">Volumen Total Analizado</span>
+                    <span class="kpi-value" id="kpi-total">32,581</span>
+                    <span class="kpi-tag tag-neutral">100% de la Cartera</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-title">Tasa de Default Global</span>
+                    <span class="kpi-value" id="kpi-default-rate">21.82%</span>
+                    <span class="kpi-tag tag-warning">7,108 Incumplimientos</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-title">Poder Discriminatorio (AUC)</span>
+                    <span class="kpi-value highlight-cyan" id="kpi-auc">0.8329</span>
+                    <span class="kpi-tag tag-success">Excelente Capacidad</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-title">Coeficiente de Gini</span>
+                    <span class="kpi-value highlight-emerald" id="kpi-gini">0.6658</span>
+                    <span class="kpi-tag tag-success">Alta Separación</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-title">Variables Seleccionadas</span>
+                    <span class="kpi-value" id="kpi-features">7 / 12</span>
+                    <span class="kpi-tag tag-primary">Filtro 4-Reglas</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-title">Tiempo de Ejecución</span>
+                    <span class="kpi-value" id="kpi-runtime">4.36 s</span>
+                    <span class="kpi-tag tag-info">Optimizado en Memoria</span>
+                </div>
+            </div>
+
+            <!-- Splits Breakdown Table -->
+            <div class="content-card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Estructura de Datasets (Estratificación & Split Temporal)</h3>
+                        <span class="card-caption">Partición metodológica para prevenir Data Leakage</span>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Dataset / Partición</th>
+                                <th>Observaciones</th>
+                                <th>% del Total</th>
+                                <th>Incumplimientos (Def)</th>
+                                <th>Tasa de Default (%)</th>
+                                <th>Propósito Metodológico</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-splits-body">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Visual Comparison Chart -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">Distribución Homogénea de Riesgo entre Particiones</h3>
+                    <span class="card-caption">Comparativa de tasa de default entre Train, Test y Out-Of-Time</span>
+                </div>
+                <div class="chart-box-large">
+                    <canvas id="chart-splits"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: FEATURE DISCRIMINATION & STORYTELLING -->
+        <!-- ========================================== -->
+        <section id="tab-discrimination" class="tab-pane">
+            <div class="pane-header">
+                <div>
+                    <h2 class="pane-title">Discriminación de Atributos & Storytelling Visual</h2>
+                    <p class="pane-desc">Análisis de la relación no lineal entre variables demográficas/financieras y el riesgo de crédito conforme a principios de Cole Nussbaumer Knaflic.</p>
+                </div>
+            </div>
+
+            <div class="grid-2col">
+                <!-- Home Ownership Storytelling Chart -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">Régimen de Vivienda vs Tasa de Impago</h3>
+                            <span class="card-caption">Chi-cuadrado: 1,248.48 (p &lt; 1e-200) | Cramér's V = 0.242</span>
+                        </div>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="chart-ownership"></canvas>
+                    </div>
+                    <div class="insight-box">
+                        <span class="insight-icon">💡</span>
+                        <div class="insight-text">
+                            <strong>Hallazgo Clave:</strong> Los solicitantes con <em>Vivienda Propia (OWN)</em> presentan la tasa de impago más baja (<strong>7.3%</strong>), mientras que los arrendatarios (<em>RENT</em>) alcanzan un <strong>31.3%</strong> de mora (riesgo 4.2x mayor).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loan Grade Degradation Chart -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">Gradiente Monótono por Calificación (Loan Grade)</h3>
+                            <span class="card-caption">Validación de monotonicidad estricta A &rarr; G</span>
+                        </div>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="chart-grades"></canvas>
+                    </div>
+                    <div class="insight-box">
+                        <span class="insight-icon">📈</span>
+                        <div class="insight-text">
+                            <strong>Monotonicidad Perfecta:</strong> Desde el Grado A (<strong>9.9%</strong> de mora) hasta el Grado G (<strong>98.4%</strong> de mora), confirmando consistencia lógica sin inversiones de riesgo.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contingency & Association Summary -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">Pruebas Estadísticas de Asociación con el Target (Default)</h3>
+                    <span class="card-caption">Kruskal-Wallis para variables cuantitativas y Cramér's V para cualitativas</span>
+                </div>
+                <div class="grid-2col">
+                    <div class="table-responsive">
+                        <table class="data-table compact">
+                            <thead>
+                                <tr>
+                                    <th>Variable Cuantitativa</th>
+                                    <th>Estadístico KW</th>
+                                    <th>p-value</th>
+                                    <th>Discriminación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>loan_percent_income</code></td>
+                                    <td>2,135.92</td>
+                                    <td>&lt; 1e-100</td>
+                                    <td><span class="pill-badge pill-high">Muy Fuerte</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>loan_int_rate</code></td>
+                                    <td>1,861.39</td>
+                                    <td>&lt; 1e-100</td>
+                                    <td><span class="pill-badge pill-high">Muy Fuerte</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>person_income</code></td>
+                                    <td>1,566.82</td>
+                                    <td>&lt; 1e-100</td>
+                                    <td><span class="pill-badge pill-high">Muy Fuerte</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>person_emp_length</code></td>
+                                    <td>265.06</td>
+                                    <td>1.35e-59</td>
+                                    <td><span class="pill-badge pill-mid">Fuerte</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>person_age</code></td>
+                                    <td>12.17</td>
+                                    <td>4.86e-04</td>
+                                    <td><span class="pill-badge pill-mod">Moderada</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table compact">
+                            <thead>
+                                <tr>
+                                    <th>Variable Cualitativa</th>
+                                    <th>Chi²</th>
+                                    <th>Cramér's V</th>
+                                    <th>Asociación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>loan_grade</code></td>
+                                    <td>3,609.90</td>
+                                    <td>0.4118</td>
+                                    <td><span class="pill-badge pill-high">Muy Alta</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>person_home_ownership</code></td>
+                                    <td>1,248.48</td>
+                                    <td>0.2421</td>
+                                    <td><span class="pill-badge pill-mid">Alta</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>cb_person_default_on_file</code></td>
+                                    <td>675.19</td>
+                                    <td>0.1781</td>
+                                    <td><span class="pill-badge pill-mid">Moderada</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>loan_intent</code></td>
+                                    <td>325.88</td>
+                                    <td>0.1237</td>
+                                    <td><span class="pill-badge pill-mod">Baja-Media</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 4: STABILITY & PSI -->
+        <!-- ========================================== -->
+        <section id="tab-stability" class="tab-pane">
+            <div class="pane-header">
+                <div>
+                    <h2 class="pane-title">Evaluación de Estabilidad Poblacional (PSI)</h2>
+                    <p class="pane-desc">El Population Stability Index (PSI) cuantifica desviaciones en la distribución empírica. Criterio regulatorio: PSI &lt; 0.10 garantiza estabilidad sin descalibración.</p>
+                </div>
+            </div>
+
+            <!-- Benchmark Reference Cards -->
+            <div class="benchmark-grid">
+                <div class="bench-card bench-green">
+                    <span class="bench-tag">PSI &lt; 0.10</span>
+                    <span class="bench-title">Estable</span>
+                    <p class="bench-desc">Población no presenta deriva apreciable. El modelo no requiere ajuste ni recalibración.</p>
+                </div>
+                <div class="bench-card bench-yellow">
+                    <span class="bench-tag">0.10 &le; PSI &lt; 0.25</span>
+                    <span class="bench-title">Deriva Moderada</span>
+                    <p class="bench-desc">Monitoreo estrecho requerido; cambios menores en el perfil de solicitantes.</p>
+                </div>
+                <div class="bench-card bench-red">
+                    <span class="bench-tag">PSI &ge; 0.25</span>
+                    <span class="bench-title">Deriva Significativa</span>
+                    <p class="bench-desc">Descalibración severa. Se requiere re-entrenamiento urgente del scorecard.</p>
+                </div>
+            </div>
+
+            <!-- Splits PSI Table -->
+            <div class="content-card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Matriz de Estabilidad: Train vs Test vs OOT</h3>
+                        <span class="card-caption">Validación transversal y temporal (Out-Of-Time)</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>PSI Train vs Test</th>
+                                <th>PSI Train vs OOT</th>
+                                <th>PSI Test vs OOT</th>
+                                <th>Diagnóstico Regulatorio</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-psi-splits-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Year over Year Stability Chart -->
+            <div class="content-card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Evolución Temporal del PSI Interanual (2013 &ndash; 2021)</h3>
+                        <span class="card-caption">Seguimiento año contra año (Year-to-Year Drift)</span>
+                    </div>
+                </div>
+                <div class="chart-box-large">
+                    <canvas id="chart-y2y-psi"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 5: VARIABLE SELECTION & 4-FOLDS -->
+        <!-- ========================================== -->
+        <section id="tab-features" class="tab-pane">
+            <div class="pane-header">
+                <div>
+                    <h2 class="pane-title">Arquitectura de Selección de Variables (4-Fold CV)</h2>
+                    <p class="pane-desc">Metodología en 4 etapas para maximizar poder discriminatorio y eliminar multicolinealidad e inestabilidad estadística.</p>
+                </div>
+            </div>
+
+            <!-- 4 Rules Cards -->
+            <div class="rules-pipeline-grid">
+                <div class="rule-box">
+                    <div class="rule-badge">Regla 1</div>
+                    <h4 class="rule-name">Asociación Continua</h4>
+                    <p class="rule-detail">Filtro Kruskal-Wallis (p &lt; 0.05 en todos los 4 Folds). Descarta variables sin relación bivariada con el default.</p>
+                    <span class="rule-status">Retenidas: 7 variables</span>
+                </div>
+
+                <div class="rule-box">
+                    <div class="rule-badge">Regla 2</div>
+                    <h4 class="rule-name">Asociación Categórica</h4>
+                    <p class="rule-detail">Filtro Cramér's V (0.10 &le; V &le; 0.50). Filtra atributos irrelevantes y descarta cuasi-identidades.</p>
+                    <span class="rule-status">Retenidas: 3 variables</span>
+                </div>
+
+                <div class="rule-box">
+                    <div class="rule-badge">Regla 3</div>
+                    <h4 class="rule-name">Multicolinealidad Continua</h4>
+                    <p class="rule-detail">Correlación de Spearman (|r| &lt; 0.50). Conserva la variable de mayor relevancia en pares redundantes.</p>
+                    <span class="rule-status">Retenidas: 5 continuas</span>
+                </div>
+
+                <div class="rule-box">
+                    <div class="rule-badge">Regla 4</div>
+                    <h4 class="rule-name">Multicolinealidad Categórica</h4>
+                    <p class="rule-detail">Cramér's V inter-categórico (&lt; 0.50). Elimina duplicidad entre calificaciones y burós.</p>
+                    <span class="rule-status">Retenidas: 2 categóricas</span>
+                </div>
+            </div>
+
+            <!-- Final Selected Features Table -->
+            <div class="content-card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Set Final Seleccionado de 7 Variables</h3>
+                        <span class="card-caption">Variables que componen el modelo de producción final</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Variable Técnica</th>
+                                <th>Tipo</th>
+                                <th>Denominación de Negocio</th>
+                                <th>Importancia Relativa</th>
+                                <th>Rol en la Política de Riesgos</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-final-features-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Professional Footer -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <span class="footer-title">Credit Risk Scoring Platform</span>
+                <span class="footer-text">Desarrollado bajo metodología CRISP-DM y estándares bancarios internacionales.</span>
+            </div>
+            <div class="footer-right">
+                <div class="footer-author-card">
+                    <span class="designer-name">Guillén Concepción</span>
+                    <span class="designer-title">Senior Data Scientist & MLOps Engineer</span>
+                    <div class="designer-links">
+                        <a href="https://www.linkedin.com/in/guillen-concepcion-25266b127" target="_blank" rel="noopener">LinkedIn</a>
+                        <span>•</span>
+                        <a href="https://github.com/GuillenConcepcion" target="_blank" rel="noopener">GitHub</a>
+                        <span>•</span>
+                        <a href="mailto:guillenconcepcion@gmail.com">Email</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
